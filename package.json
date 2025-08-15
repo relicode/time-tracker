@@ -1,15 +1,18 @@
 {
   "name": "time-tracker",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "main": "dist/cli.js",
-  "bin": "dist/cli.js",
+  "bin": {
+    "time-tracker": "dist/cli.js",
+    "time-report": "dist/report.js"
+  },
   "type": "module",
   "engines": {
     "node": ">=16"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "rm -r dist; tsc",
     "dev": "tsc --watch",
     "test": "npm run lint:prettier && ava",
     "lint": "concurrently --prefix-colors auto --kill-others-on-fail 'npm:lint:*'",
