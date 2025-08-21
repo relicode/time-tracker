@@ -34,13 +34,14 @@ const isRecord = (obj?: Partial<TimeRecord>): obj is TimeRecord => {
 const main = async () => {
   const files = await Promise.all(args.map((a) => readFile(a, 'utf8')))
   const days = files.map((f) => JSON.parse(f))
-  const records: (TimeRecord & { duration: string })[] = []
+  const records = new Array<TimeRecord & { comment: string; duration: string }>()
 
   for (const timeRecords of days) {
     for (const record of timeRecords.reverse()) {
       if (isRecord(record))
         records.push({
           ...record,
+          comment: record.comment || '',
           duration: toHoursAndMinutes(new Date(record.end).getTime() - new Date(record.start).getTime()),
         })
     }

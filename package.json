@@ -12,7 +12,7 @@
     "node": ">=16"
   },
   "scripts": {
-    "build": "rm -r dist; tsc",
+    "build": "rm -r dist; tsc; chmod a+x dist/cli.js dist/report.js",
     "dev": "tsc --watch",
     "test": "npm run lint:prettier && ava",
     "lint": "concurrently --prefix-colors auto --kill-others-on-fail 'npm:lint:*'",
