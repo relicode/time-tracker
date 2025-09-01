@@ -13,8 +13,7 @@ export type LogEntry = ActiveTask & { end: ActiveTask['start'] }
 
 const formatDate = (d: Date) => [d.getHours(), d.getMinutes()].map((n) => String(n).padStart(2, '0')).join(':')
 
-const parseLogEntry = (entry: LogEntry) =>
-  `${entry.start.toLocaleString()} - ${formatDate(entry.end)} - ${entry.task}`
+const parseLogEntry = (entry: LogEntry) => `${entry.start.toLocaleString()} - ${formatDate(entry.end)} - ${entry.task}`
 
 type Props = {
   dataFile: string
@@ -26,7 +25,6 @@ const commentKeys = ['c', 'C'] as const
 
 type Includes = <T>(arr: readonly T[], element: unknown) => boolean
 const includes: Includes = (arr, elem): elem is typeof arr => arr.includes(elem as (typeof arr)[number])
-
 
 export default function App({ dataFile, entries }: Props) {
   const [activeTask, setActiveTask] = useState<ActiveTask>()
