@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+
+import React from 'react'
+import { render, Box, Text, type BoxProps } from 'ink'
+
 import { readFile } from 'node:fs/promises'
 
 const args = process.argv.slice(2)
@@ -31,6 +35,35 @@ const isRecord = (obj?: Partial<TimeRecord>): obj is TimeRecord => {
   return true
 }
 
+const noBorder: BoxProps = {
+  borderStyle: 'single',
+  borderRight: false,
+  borderLeft: false,
+  borderTop: false,
+  borderBottom: false,
+}
+
+const columnProps: BoxProps = {
+  flexDirection: 'column',
+  paddingX: 1,
+  ...noBorder,
+}
+
+const Column = ({ heading, items, last }: { heading: string; items: string[]; last?: boolean }) => (
+  <Box {...columnProps} borderRight={last ? false : true} flexGrow={1}>
+    {items.map((i, idx) => (
+      <>
+        {!idx && (
+          <Box {...noBorder} borderBottom justifyContent="center">
+            <Text bold>{heading}</Text>
+          </Box>
+        )}
+        <Text key={idx}>{i}</Text>
+      </>
+    ))}
+  </Box>
+)
+
 const main = async () => {
   const files = await Promise.all(args.map((a) => readFile(a, 'utf8')))
   const days = files.map((f) => JSON.parse(f))
@@ -59,10 +92,18 @@ const main = async () => {
     comment,
   }))
 
-  console.table(formatted)
-
-  console.log(
-    `In total: ${toHoursAndMinutes(records.reduce((acc, cur) => acc + (new Date(cur.end).getTime() - new Date(cur.start).getTime()), 0))}`
+  return render(
+    <Box width={100} flexDirection="column">
+      <Box borderStyle="round">
+        <Column heading="Task" items={formatted.map((f) => f.task)} />
+        <Column heading="From - To" items={formatted.map((f) => f.fromTo)} />
+        <Column heading="Duration" items={formatted.map((f) => f.duration)} />
+        <Column last heading="Comment" items={formatted.map((f) => f.comment)} />
+      </Box>
+      <Box borderStyle="round" justifyContent="center">
+        <Text>{`In total: ${toHoursAndMinutes(records.reduce((acc, cur) => acc + (new Date(cur.end).getTime() - new Date(cur.start).getTime()), 0))}`}</Text>
+      </Box>
+    </Box>
   )
 }
 
