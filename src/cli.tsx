@@ -21,7 +21,7 @@ const isRecord = (obj?: Partial<TimeRecord>): obj is TimeRecord => {
 }
 
 const argv = yargs(hideBin(process.argv))
-  .scriptName('./time-tracker')
+  .scriptName('time-tracker')
   .strict(true)
   .wrap(100)
   .command('* <data file>', 'Run and write to data file', (y) =>
@@ -38,6 +38,7 @@ const argv = yargs(hideBin(process.argv))
   )
 
 const main = async () => {
+  // Run interactive time tracker
   if ('datafile' in argv.argv && typeof argv.argv['datafile'] === 'string') {
     const dataFile = argv.argv['datafile']
     let entries: LogEntry[] = []
@@ -57,7 +58,10 @@ const main = async () => {
     const props = { dataFile, entries }
     console.clear()
     render(<App {...props} />)
-  } else if ('datafiles' in argv.argv && Array.isArray(argv.argv['datafiles'])) {
+  }
+
+  // Run reporting tool
+  else if ('datafiles' in argv.argv && Array.isArray(argv.argv['datafiles'])) {
     const files = await Promise.all(argv.argv['datafiles'].map((a) => readFile(a, 'utf8')))
     const days = files.map((f) => JSON.parse(f))
     const records = new Array<TimeRecord & { comment: string; duration: string }>()
